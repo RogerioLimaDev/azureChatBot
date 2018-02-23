@@ -115,6 +115,10 @@ qnaMakerDialog.respondFromQnAMakerResult = (session,result) => {
 bot.dialog('/', qnaMakerDialog);
 
 
+//testando o gitHub //
+
+
+
 
 
 
