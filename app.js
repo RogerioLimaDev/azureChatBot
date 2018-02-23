@@ -114,6 +114,8 @@ qnaMakerDialog.respondFromQnAMakerResult = (session,result) => {
 
 bot.dialog('/', qnaMakerDialog);
 
+var empty =  function(){};
+
 
 
 
