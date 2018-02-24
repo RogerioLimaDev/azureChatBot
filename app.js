@@ -53,7 +53,7 @@ const qnaMakerDialog = new builder_cognitiveservices.QnAMakerDialog(
     {
         recognizers: [recognizer],
         defaultMessage:'Ops!...Não entendi. Pode reformular a pergunta?',
-        qnaThreshold: 0.5,
+        qnaThreshold: 0.3,
         feedbackLib: qnaMakerTools
     }
 );
@@ -116,7 +116,7 @@ qnaMakerDialog.respondFromQnAMakerResult = (session,result) => {
 bot.dialog('/', qnaMakerDialog);
 
 
-
+//modificar//
 
 
 
