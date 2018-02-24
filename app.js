@@ -43,7 +43,8 @@ bot.set('storage', tableStorage);
 
 var recognizer = new builder_cognitiveservices.QnAMakerRecognizer({
     knowledgeBaseId: process.env.QnAKnowledgebaseId, 
-    subscriptionKey: process.env.QnASubscriptionKey});
+    subscriptionKey: process.env.QnASubscriptionKey,
+    top:3});
 
 var qnaMakerTools = new builder_cognitiveservices.QnAMakerTools();
 bot.library(qnaMakerTools.createLibrary());
