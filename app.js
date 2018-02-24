@@ -9,6 +9,8 @@ var restify = require('restify');
 var builder = require('botbuilder');
 var botbuilder_azure = require("botbuilder-azure");
 var builder_cognitiveservices = require("botbuilder-cognitiveservices");
+var minha = require('./minhabiblioteca');
+
 
 // Setup Restify Server
 var server = restify.createServer();
@@ -47,6 +49,7 @@ var recognizer = new builder_cognitiveservices.QnAMakerRecognizer({
     top:3});
 
 var qnaMakerTools = new builder_cognitiveservices.QnAMakerTools();
+var qnaMakerTools = new minha.BrazilianQnaMakerTools();//
 bot.library(qnaMakerTools.createLibrary());
 
 const qnaMakerDialog = new builder_cognitiveservices.QnAMakerDialog(
