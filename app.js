@@ -43,6 +43,31 @@ const bot = new builder.UniversalBot(connector);
 
 bot.set('storage', tableStorage);
 
+bot.on('conversationUpdate',(update) => {
+    if(update.membersAdded){
+        update.membersAdded.forEach( identity =>{
+            if(identity.id === update.address.bot.id){
+                bot.beginDialog(update.address,'start');
+            }
+        });
+    }     
+ });
+
+ bot.dialog('start',[(session)=>{
+    if(!session.userData.reload)
+        {const helloCard  = new builder.HeroCard(session)
+            .title('Olá')
+            .images([builder.CardImage.create(session,'https://yt3.ggpht.com/-AZ4w5v06Pxo/AAAAAAAAAAI/AAAAAAAAAAA/GfUVPVBuH_c/s288-mo-c-c0xffffffff-rj-k-no/photo.jpg')])
+            .text('Me chamo Tropical Cyborg. Sou especialista em realidade virtual e aumentada. Como posso te ajudar?');
+
+            var helloMessage = new builder.Message(session).addAttachment(helloCard);
+            session.send(helloMessage);
+
+        }
+    session.endDialog();
+    }
+]);
+
 var recognizer = new builder_cognitiveservices.QnAMakerRecognizer({
     knowledgeBaseId: process.env.QnAKnowledgebaseId, 
     subscriptionKey: process.env.QnASubscriptionKey,
@@ -61,14 +86,11 @@ const qnaMakerDialog = new builder_cognitiveservices.QnAMakerDialog(
     }
 );
 
+
 qnaMakerDialog.respondFromQnAMakerResult = (session,result) => {
     const resposta = result.answers[0].answer;
     const partesDaResposta = resposta.split('%');
     const [titulo, imagem, descricao, url] = partesDaResposta;
-
-
-    // if(partesDaResposta.length ===1)
-    //     return session.send(resposta);
 
     var card4 = ()=>{
         const card  = new builder.HeroCard(session)
