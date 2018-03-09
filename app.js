@@ -77,13 +77,13 @@ var recognizer = new builder.LuisRecognizer(LuisModelUrl);
 
 var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 .matches('Cumprimento', (session) => {
-    session.send('You reached Greeting intent, you said \'%s\'.', session.message.text);
+    session.send('You reached Cumprimento intent, you said \'%s\'.', session.message.text);
 })
 .matches('Xingamento', (session) => {
-    session.send('You reached Help intent, you said \'%s\'.', session.message.text);
+    session.send('You reached Xingamento intent, you said \'%s\'.', session.message.text);
 })
 .matches('Oque', (session) => {
-    session.send('You reached Cancel intent, you said \'%s\'.', session.message.text);
+    session.send('You reached O que intent, you said \'%s\'.', session.message.text);
 })
 .onDefault((session) => {
     session.send('Pouz, não entendi o que vc quis dizer com: \'%s\'.', session.message.text);
