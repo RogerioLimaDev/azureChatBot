@@ -38,10 +38,26 @@ var tableName = 'botdata';
 var azureTableClient = new botbuilder_azure.AzureTableClient(tableName, process.env.AzureWebJobsStorage);
 var tableStorage = new botbuilder_azure.AzureBotStorage({ gzipData: false }, azureTableClient);
 
+var luisAppId = process.env.LuisAppId;
+var luisAPIKey = process.env.LuisAPIKey;
+var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
+const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisAppId + '?subscription-key=' + luisAPIKey;
+
 // Create your bot with a function to receive messages from the user
 const bot = new builder.UniversalBot(connector);
 
 bot.set('storage', tableStorage);
+
+var recognizer = new builder_cognitiveservices.QnAMakerRecognizer({
+    knowledgeBaseId: process.env.QnAKnowledgebaseId, 
+    subscriptionKey: process.env.QnASubscriptionKey,
+    top:3});
+
+var qnaMakerTools = new builder_cognitiveservices.QnAMakerTools();
+var qnaMakerTools = new minha.BrazilianQnaMakerTools();//
+bot.library(qnaMakerTools.createLibrary());
+
+
 
 bot.on('conversationUpdate',(update) => {
     if(update.membersAdded){
@@ -68,14 +84,30 @@ bot.on('conversationUpdate',(update) => {
     }
 ]);
 
-var recognizer = new builder_cognitiveservices.QnAMakerRecognizer({
-    knowledgeBaseId: process.env.QnAKnowledgebaseId, 
-    subscriptionKey: process.env.QnASubscriptionKey,
-    top:3});
+/// Luis part of the Code ////
 
-var qnaMakerTools = new builder_cognitiveservices.QnAMakerTools();
-var qnaMakerTools = new minha.BrazilianQnaMakerTools();//
-bot.library(qnaMakerTools.createLibrary());
+var recognizer = new builder.LuisRecognizer(LuisModelUrl);
+var intents = new builder.IntentDialog({ recognizers: [recognizer] })
+.matches('Cumprimento', (session) => {
+    session.send('You reached Greeting intent, you said \'%s\'.', session.message.text);
+})
+.matches('Xingamento', (session) => {
+    session.send('You reached Help intent, you said \'%s\'.', session.message.text);
+})
+.matches('Oque', (session) => {
+    session.send('You reached Cancel intent, you said \'%s\'.', session.message.text);
+})
+.onDefault((session) => {
+    session.send('Pouz, não entendi o que vc quis dizer com: ** \'%s\'**.', session.message.text);
+});
+
+bot.dialog('/', intents);
+
+
+////End of Luis Part of the Code ////
+
+
+////QnAMaker part of the Code //////
 
 const qnaMakerDialog = new builder_cognitiveservices.QnAMakerDialog(
     {
@@ -141,7 +173,7 @@ qnaMakerDialog.respondFromQnAMakerResult = (session,result) => {
 bot.dialog('/', qnaMakerDialog);
 
 
-//modificar//
+////End of QnAMaker part of the Code //////
 
 
 
