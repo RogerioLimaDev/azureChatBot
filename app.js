@@ -86,7 +86,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
     session.send('You reached Cancel intent, you said \'%s\'.', session.message.text);
 })
 .onDefault((session) => {
-    session.send('Pouz, não entendi o que vc quis dizer com: ** \'%s\'**.', session.message.text);
+    session.send('Pouz, não entendi o que vc quis dizer com: \'%s\'.', session.message.text);
 });
 
 bot.dialog('/', intents);
