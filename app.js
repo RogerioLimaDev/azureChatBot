@@ -41,23 +41,10 @@ var tableStorage = new botbuilder_azure.AzureBotStorage({ gzipData: false }, azu
 var luisAppId = process.env.LuisAppId;
 var luisAPIKey = process.env.LuisAPIKey;
 var luisAPIHostName = process.env.LuisAPIHostName || 'westus.api.cognitive.microsoft.com';
-const LuisModelUrl = 'https://' + luisAPIHostName + '/luis/v2.0/apps/' + luisAppId + '?subscription-key=' + luisAPIKey;
-
+const LuisModelUrl = 'https://westus.api.cognitive.microsoft.com/luis/v2.0/apps/f1c2986b-e9b0-426f-99ec-faf01acc68b5?subscription-key=69847929754f4440b23d38f8e6b370ec&verbose=true&timezoneOffset=0&q=';
 // Create your bot with a function to receive messages from the user
 const bot = new builder.UniversalBot(connector);
-
 bot.set('storage', tableStorage);
-
-var recognizer = new builder_cognitiveservices.QnAMakerRecognizer({
-    knowledgeBaseId: process.env.QnAKnowledgebaseId, 
-    subscriptionKey: process.env.QnASubscriptionKey,
-    top:3});
-
-var qnaMakerTools = new builder_cognitiveservices.QnAMakerTools();
-var qnaMakerTools = new minha.BrazilianQnaMakerTools();//
-bot.library(qnaMakerTools.createLibrary());
-
-
 
 bot.on('conversationUpdate',(update) => {
     if(update.membersAdded){
@@ -87,6 +74,7 @@ bot.on('conversationUpdate',(update) => {
 /// Luis part of the Code ////
 
 var recognizer = new builder.LuisRecognizer(LuisModelUrl);
+
 var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 .matches('Cumprimento', (session) => {
     session.send('You reached Greeting intent, you said \'%s\'.', session.message.text);
@@ -108,6 +96,16 @@ bot.dialog('/', intents);
 
 
 ////QnAMaker part of the Code //////
+
+// var recognizer = new builder_cognitiveservices.QnAMakerRecognizer({
+//     knowledgeBaseId: process.env.QnAKnowledgebaseId, 
+//     subscriptionKey: process.env.QnASubscriptionKey,
+//     top:3});
+
+// var qnaMakerTools = new builder_cognitiveservices.QnAMakerTools();
+// var qnaMakerTools = new minha.BrazilianQnaMakerTools();//
+// bot.library(qnaMakerTools.createLibrary());
+
 
 // const qnaMakerDialog = new builder_cognitiveservices.QnAMakerDialog(
 //     {
