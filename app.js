@@ -86,7 +86,8 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
     session.send('You reached **Definicao** intent, you said **\'%s\'**.', session.message.text);
 })
 .onDefault((session) => {
-    session.send('Pouz, não entendi o que vc quis dizer com: **\'%s\'**.', session.message.text);
+    // session.send('Pouz, não entendi o que vc quis dizer com: **\'%s\'**.', session.message.text);
+    goToQnA(session);
 });
 
 bot.dialog('/', intents);
@@ -97,78 +98,83 @@ bot.dialog('/', intents);
 
 ////QnAMaker part of the Code //////
 
-// var recognizer = new builder_cognitiveservices.QnAMakerRecognizer({
-//     knowledgeBaseId: process.env.QnAKnowledgebaseId, 
-//     subscriptionKey: process.env.QnASubscriptionKey,
-//     top:3});
+var goToQnA = (session) =>{
+    var recognizer = new builder_cognitiveservices.QnAMakerRecognizer({
+        knowledgeBaseId: process.env.QnAKnowledgebaseId, 
+        subscriptionKey: process.env.QnASubscriptionKey,
+        top:3});
+    
+    var qnaMakerTools = new builder_cognitiveservices.QnAMakerTools();
+    var qnaMakerTools = new minha.BrazilianQnaMakerTools();//
+    bot.library(qnaMakerTools.createLibrary());
+    
+    
+    const qnaMakerDialog = new builder_cognitiveservices.QnAMakerDialog(
+        {
+            recognizers: [recognizer],
+            defaultMessage:'Ops!...Não entendi. Pode reformular a pergunta?',
+            qnaThreshold: 0.3,
+            feedbackLib: qnaMakerTools
+        }
+    );
+    
+    
+    qnaMakerDialog.respondFromQnAMakerResult = (session,result) => {
+        const resposta = result.answers[0].answer;
+        const partesDaResposta = resposta.split('%');
+        const [titulo, imagem, descricao, url] = partesDaResposta;
+    
+        var card4 = ()=>{
+            const card  = new builder.HeroCard(session)
+                .title(titulo)
+                .images([builder.CardImage.create(session,imagem.trim())])
+                .text(descricao)
+                .buttons([ builder.CardAction.openUrl(session, url.trim(), 'mande um email')]);
+            const retorno = new builder.Message(session).addAttachment(card);
+            session.send(retorno);
+        };
+    
+        var card3 = ()=>{
+            const card  = new builder.HeroCard(session)
+                .title(titulo)
+                .images([builder.CardImage.create(session,imagem.trim())])
+                .text(descricao);
+            const retorno = new builder.Message(session).addAttachment(card);
+            session.send(retorno);
+        };
+    
+        var card2 = ()=>{
+            const card  = new builder.HeroCard(session)
+            .text(descricao)
+            .buttons([ builder.CardAction.openUrl(session, url.trim(), 'mande um email')]);
+            const retorno = new builder.Message(session).addAttachment(card);
+            session.send(retorno);
+        };
+    
+        switch(partesDaResposta.length){
+            case 4:
+            card4();
+            break;
+    
+            case 3:
+            card3();
+            break;
+    
+            case 2:
+            card2();
+            break;
+    
+            case 1:
+            session.send(resposta);
+            break;
+        }
+    };
+    
+    bot.dialog('/', qnaMakerDialog);
+ 
+};
 
-// var qnaMakerTools = new builder_cognitiveservices.QnAMakerTools();
-// var qnaMakerTools = new minha.BrazilianQnaMakerTools();//
-// bot.library(qnaMakerTools.createLibrary());
 
-
-// const qnaMakerDialog = new builder_cognitiveservices.QnAMakerDialog(
-//     {
-//         recognizers: [recognizer],
-//         defaultMessage:'Ops!...Não entendi. Pode reformular a pergunta?',
-//         qnaThreshold: 0.3,
-//         feedbackLib: qnaMakerTools
-//     }
-// );
-
-
-// qnaMakerDialog.respondFromQnAMakerResult = (session,result) => {
-//     const resposta = result.answers[0].answer;
-//     const partesDaResposta = resposta.split('%');
-//     const [titulo, imagem, descricao, url] = partesDaResposta;
-
-//     var card4 = ()=>{
-//         const card  = new builder.HeroCard(session)
-//             .title(titulo)
-//             .images([builder.CardImage.create(session,imagem.trim())])
-//             .text(descricao)
-//             .buttons([ builder.CardAction.openUrl(session, url.trim(), 'mande um email')]);
-//         const retorno = new builder.Message(session).addAttachment(card);
-//         session.send(retorno);
-//     };
-
-//     var card3 = ()=>{
-//         const card  = new builder.HeroCard(session)
-//             .title(titulo)
-//             .images([builder.CardImage.create(session,imagem.trim())])
-//             .text(descricao);
-//         const retorno = new builder.Message(session).addAttachment(card);
-//         session.send(retorno);
-//     };
-
-//     var card2 = ()=>{
-//         const card  = new builder.HeroCard(session)
-//         .text(descricao)
-//         .buttons([ builder.CardAction.openUrl(session, url.trim(), 'mande um email')]);
-//         const retorno = new builder.Message(session).addAttachment(card);
-//         session.send(retorno);
-//     };
-
-//     switch(partesDaResposta.length){
-//         case 4:
-//         card4();
-//         break;
-
-//         case 3:
-//         card3();
-//         break;
-
-//         case 2:
-//         card2();
-//         break;
-
-//         case 1:
-//         session.send(resposta);
-//         break;
-//     }
-// };
-
-// bot.dialog('/', qnaMakerDialog);
 
 
 ////End of QnAMaker part of the Code //////
