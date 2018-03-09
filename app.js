@@ -82,7 +82,7 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 .matches('Xingamento', (session) => {
     session.send('You reached **Xingamento** intent,  you said **\'%s\'**.', session.message.text);
 })
-.matches('Oque', (session, args) => {
+.matches('Oque', (session) => {
     session.send('You reached **Oque** intent, you said **\'%s\'**.', session.message.text);
 })
 .onDefault((session) => {
