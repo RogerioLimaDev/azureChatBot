@@ -60,7 +60,7 @@ bot.on('conversationUpdate',(update) => {
     if(!session.userData.reload)
         {const helloCard  = new builder.HeroCard(session)
             .title('Olá')
-            .images([builder.CardImage.create(session)])
+            .images([builder.CardImage.create(session, "http://www.tropicalcyborg.com/images/tropical3d.png")])
             .text('Me chamo Tropical Cyborg. Sou especialista em realidade virtual e aumentada. Como posso te ajudar?');
 
             var helloMessage = new builder.Message(session).addAttachment(helloCard);
