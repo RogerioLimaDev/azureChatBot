@@ -88,8 +88,8 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
         session.send('You reached **Xingamento** intent,  you said **\'%s\'**.', session.message.text);
     })
     .matches('Definicao', (session) => {
-        var entityChoices = ["HMD.Daydream", "HMD.cardboard","HMD.gear","HMD.htc","HMD.rift","HMD.magicleap","HMD.hololens"];
-        var entity = builder.EntityRecognizer.findBestMatch(entityChoices);
+        // var entityChoices = ["HMD.Daydream", "HMD.cardboard","HMD.gear","HMD.htc","HMD.rift","HMD.magicleap","HMD.hololens"];
+        // var entity = builder.EntityRecognizer.findBestMatch(entityChoices);
         session.send('You reached **Definicao** intent and entity **'+ entity + '**, you said **\'%s\'**.', session.message.text);
     })
     .onDefault((session) => {
