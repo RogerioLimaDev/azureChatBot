@@ -75,19 +75,26 @@ bot.on('conversationUpdate',(update) => {
 
 var recognizer = new builder.LuisRecognizer(LuisModelUrl);
 
+var entity = builder.EntityRecognizer.findEntity(args.intent.entities, 'builtin.geography.city');
+
+
 var intents = new builder.IntentDialog({ recognizers: [recognizer] })
-.matches('Cumprimento', (session) => {
-    session.send('You reached **Cumprimento** intent, you said **\'%s\'**.', session.message.text);
-})
-.matches('Xingamento', (session) => {
-    session.send('You reached **Xingamento** intent,  you said **\'%s\'**.', session.message.text);
-})
-.matches('Definicao', (session) => {
-    session.send('You reached **Definicao** intent, you said **\'%s\'**.', session.message.text);
-})
-.onDefault((session) => {
-    session.send('Pouz, não entendi o que vc quis dizer com: **\'%s\'**.', session.message.text);
-    // goToQnA(session);
+
+    .matches('Cumprimento', (session) => {
+        session.send('You reached **Cumprimento** intent, you said **\'%s\'**.', session.message.text);
+        
+    })
+    .matches('Xingamento', (session) => {
+        session.send('You reached **Xingamento** intent,  you said **\'%s\'**.', session.message.text);
+    })
+    .matches('Definicao', (session) => {
+        var entityChoices = ["HMD.Daydream", "HMD.cardboard","HMD.gear","HMD.htc","HMD.rift","HMD.magicleap","HMD.hololens"];
+        var entity = builder.EntityRecognizer.findBestMatch(entityChoices);
+        session.send('You reached **Definicao** intent and entity **'+ entity + '**, you said **\'%s\'**.', session.message.text);
+    })
+    .onDefault((session) => {
+        session.send('Pouz, não entendi o que vc quis dizer com: **\'%s\'**.', session.message.text);
+        // goToQnA(session);
 });
 
 bot.dialog('/', intents);
