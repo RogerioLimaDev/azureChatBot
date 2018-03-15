@@ -15,7 +15,14 @@ var minha = require('./minhabiblioteca');
 // Setup Restify Server
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function () {
-   console.log('%s listening to %s', server.name, server.url); 
+   console.log('Hey, %s listening to %s', server.name, server.url); 
+});
+  
+// Create chat connector for communicating with the Bot Framework Service
+var connector = new builder.ChatConnector({
+    appId: "56849dfd-97c9-4185-9b17-7069e0eee786",
+    appPassword: "vthZGJD64%*;psqoWGG785?",
+    openIdMetadata: process.env.BotOpenIdMetadata 
 });
   
 // Create chat connector for communicating with the Bot Framework Service
@@ -88,8 +95,8 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
         session.send('You reached **Xingamento** intent,  you said **\'%s\'**.', session.message.text);
     })
     .matches('Definicao', (session) => {
-        // var entityChoices = ["HMD.Daydream", "HMD.cardboard","HMD.gear","HMD.htc","HMD.rift","HMD.magicleap","HMD.hololens"];
-        // var entity = builder.EntityRecognizer.findBestMatch(entityChoices);
+        var entityChoices = ["HMD.Daydream", "HMD.cardboard","HMD.gear","HMD.htc","HMD.rift","HMD.magicleap","HMD.hololens"];
+        var entity = builder.EntityRecognizer.findBestMatch(entityChoices);
         session.send('You reached **Definicao** intent, you said **\'%s\'**.', session.message.text);
     })
     .onDefault((session) => {
