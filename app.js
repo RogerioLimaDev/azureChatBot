@@ -15,24 +15,14 @@ var minha = require('./minhabiblioteca');
 // Setup Restify Server
 var server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, function () {
-   console.log('Hey, %s listening to %s', server.name, server.url); 
+    console.log('%s listening to %s', server.name, server.url);
 });
-  
-// Create chat connector for communicating with the Bot Framework Service
+// Create connector and listen for messages
 var connector = new builder.ChatConnector({
-    appId: "56849dfd-97c9-4185-9b17-7069e0eee786",
-    appPassword: "vthZGJD64%*;psqoWGG785?",
-    openIdMetadata: process.env.BotOpenIdMetadata 
-});
-  
-// Create chat connector for communicating with the Bot Framework Service
-var connector = new builder.ChatConnector({
-    appId: process.env.MicrosoftAppId,
-    appPassword: process.env.MicrosoftAppPassword,
-    openIdMetadata: process.env.BotOpenIdMetadata 
+    appId: process.env.MICROSOFT_APP_ID,
+    appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
 
-// Listen for messages from users 
 server.post('/api/messages', connector.listen());
 
 /*----------------------------------------------------------------------------------------
